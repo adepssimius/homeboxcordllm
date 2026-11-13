@@ -1,0 +1,4 @@
+# sharp ships prebuilt binaries as optional deps (@img/sharp-*); its install
+# script only builds from source, which this project never needs.
+allowBuilds:
+  sharp: false

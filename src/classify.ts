@@ -1,4 +1,4 @@
-import type { ApprovalLevel } from "../config.js";
+import type { Classification, ToolCall } from "discordllm";
 
 /**
  * Sorts every Homebox tool call into a tier, which decides whether it waits
@@ -6,8 +6,8 @@ import type { ApprovalLevel } from "../config.js";
  *
  *   read         looks, changes nothing — never asks
  *   write        creates or edits inventory: items, locations, tags, fields,
- *                attachments, maintenance — asks only at BOX_APPROVAL_LEVEL=write
- *   destructive  deletes, and bulk CSV import — asks unless BOX_APPROVAL_LEVEL=none
+ *                attachments, maintenance — asks only at APPROVAL_LEVEL=write
+ *   destructive  deletes, and bulk CSV import — asks unless APPROVAL_LEVEL=none
  *
  * It fails toward asking: a tool this file has never heard of (a newer
  * homebox-mcp, say) is `write` unless its name says it deletes. The names are
@@ -15,30 +15,15 @@ import type { ApprovalLevel } from "../config.js";
  * starting point.
  */
 
-export type Tier = "read" | "write" | "destructive";
-
-export interface Classification {
-  readonly tier: Tier;
-  /** Why, in a phrase, for the approval card and the audit log. */
-  readonly reason: string;
-}
+export const TIERS = ["read", "write", "destructive"] as const;
+export type Tier = (typeof TIERS)[number];
 
 /** The MCP server name the bot registers homebox-mcp under. Tool names arrive as `mcp__homebox__<tool>`. */
 export const BOX_SERVER = "homebox";
-const PREFIX = `mcp__${BOX_SERVER}__`;
-
-export function isBoxTool(toolName: string): boolean {
-  return toolName.startsWith(PREFIX);
-}
-
-export function bareBoxTool(toolName: string): string {
-  return toolName.startsWith(PREFIX) ? toolName.slice(PREFIX.length) : toolName;
-}
-
 /**
  * Read-only. Includes the tools that only write a *local* file (a label PNG,
  * a QR code, a CSV export, a downloaded attachment): they change nothing in
- * Homebox, and where the file lands is policed by agent/policy.ts.
+ * Homebox, and where the file lands is policed by the bot's policy (bot.ts).
  */
 const READ_TOOLS = new Set([
   "search_items",
@@ -67,33 +52,22 @@ const DESTRUCTIVE_TOOLS = new Set(["import_csv"]);
 
 const DESTRUCTIVE_PREFIXES = ["delete_", "remove_", "purge_", "wipe_"];
 
-const read = (reason: string): Classification => ({ tier: "read", reason });
-const write = (reason: string): Classification => ({ tier: "write", reason });
-const destructive = (reason: string): Classification => ({ tier: "destructive", reason });
+const LOCAL_FILE_ONLY = new Set(["get_attachment", "export_csv", "generate_label", "qrcode"]);
 
-export function classify(toolName: string): Classification {
-  const t = bareBoxTool(toolName);
-  if (READ_TOOLS.has(t)) return read(t === "get_attachment" || t === "export_csv" || t === "generate_label" || t === "qrcode" ? "only writes a local file" : "only reads");
-  if (DESTRUCTIVE_TOOLS.has(t)) return destructive(`${t} can overwrite many items at once`);
-  if (DESTRUCTIVE_PREFIXES.some((p) => t.startsWith(p))) return destructive(`${t} deletes`);
-  return write(`${t} changes the inventory`);
-}
-
-const ASKS_FROM: Record<ApprovalLevel, readonly Tier[]> = {
-  write: ["write", "destructive"],
-  destructive: ["destructive"],
-  none: [],
-};
-
-/** Whether a call in this tier waits for a person at this approval level. */
-export function needsApproval(tier: Tier, level: ApprovalLevel): boolean {
-  return ASKS_FROM[level].includes(tier);
+/** Sorts a call into a tier. Says nothing about tools that are not Homebox's. */
+export function classify(call: Pick<ToolCall, "server" | "tool">): (Classification & { tier: Tier }) | undefined {
+  if (call.server !== BOX_SERVER) return undefined;
+  const t = call.tool;
+  if (READ_TOOLS.has(t)) return { tier: "read", reason: LOCAL_FILE_ONLY.has(t) ? "only writes a local file" : "only reads" };
+  if (DESTRUCTIVE_TOOLS.has(t)) return { tier: "destructive", reason: `${t} can overwrite many items at once` };
+  if (DESTRUCTIVE_PREFIXES.some((p) => t.startsWith(p))) return { tier: "destructive", reason: `${t} deletes` };
+  return { tier: "write", reason: `${t} changes the inventory` };
 }
 
 /**
  * The path-valued arguments of each tool, keyed by argument name. The
  * homebox-mcp subprocess reads and writes the local filesystem with these, so
- * agent/policy.ts confines them to the workspace exactly like the agent's own
+ * the bot's policy (bot.ts) confines them to the workspace exactly like the agent's own
  * file tools. Without this, `attach_document(source="/proc/self/environ")`
  * would upload the Homebox token into Homebox.
  */
@@ -106,6 +80,4 @@ export const PATH_ARGS: Readonly<Record<string, readonly string[]>> = {
 };
 
 /** `attach_document` may also take an http(s) URL — a manual on a manufacturer's site. */
-export function isUrl(s: string): boolean {
-  return /^https?:\/\//i.test(s.trim());
-}
+export const URL_ARGS = ["source"] as const;

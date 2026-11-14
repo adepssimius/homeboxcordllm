@@ -10,8 +10,10 @@ labels. Ask *"where's the stud finder?"*, *"what's in Garage/Tote 3?"*, or
 *"which warranties run out this year?"*, or post a photo and say *"add this to
 the garage shelf"*.
 
-Built on the [Claude Agent SDK](https://code.claude.com/docs/en/agent-sdk), in
-the same shape as fitcordllm, disk8sllm and hasscordllm.
+Built on [discordllm](https://github.com/adepssimius/discordLLM), which is the
+Discord, session, approval and scheduling machinery shared with fitcordllm and
+hasscordllm. This repository is only what is Homebox's: the server, which of
+its tools are dangerous, and what the agent is told.
 
 ## Photos
 
@@ -44,7 +46,7 @@ reply, ready to print.
 ## Approval
 
 Every Homebox tool call is sorted into a tier
-([`src/homebox/classify.ts`](src/homebox/classify.ts)):
+([`src/classify.ts`](src/classify.ts)):
 
 | Tier | What | At the default level |
 | --- | --- | --- |
@@ -52,7 +54,7 @@ Every Homebox tool call is sorted into a tier
 | **write** | create, edit, move, tag, attach, mark sold, log maintenance | goes straight through |
 | **destructive** | every `delete_*`, and `import_csv` (it can overwrite many items in one call) | **waits for Approve** |
 
-`BOX_APPROVAL_LEVEL` moves the line (`write` / `destructive` / `none`). A tool
+`APPROVAL_LEVEL` moves the line (`write` / `destructive` / `none`). A tool
 the classifier doesn't recognise counts as a write, or destructive if its name
 says it deletes.
 
@@ -99,7 +101,7 @@ seeded on first start. Pasting in your conventions is a good first message.
   the pod.
 - **Web search.** No `WebFetch`, no subagents.
 - **No shell.** The Homebox token is in the homebox-mcp subprocess's
-  environment only, not the agent's ([`sanitizedEnv`](src/config.ts)).
+  environment only, not the agent's.
 - **Only the MCP servers the bot defines.** `strictMcpConfig` is on.
 
 ## Running it
@@ -128,6 +130,7 @@ Everything is environment variables; [`.env.example`](.env.example) lists them.
 | `DISCORD_BOT_TOKEN`, `DISCORD_GUILD_ID`, `DISCORD_CHAT_CHANNEL_IDS` | |
 | `HOMEBOX_URL`, `HOMEBOX_TOKEN` | |
 | `DATA_DIR`, `HOME` | both on persistent storage |
+| `DATABASE_URL` | optional `postgres://…`; the default is a SQLite file under `DATA_DIR` |
 
 [`deploy/README.md`](deploy/README.md) describes the Kubernetes shape.
 
@@ -139,6 +142,11 @@ pnpm build
 pnpm test
 pnpm typecheck
 ```
+
+`pnpm image` builds the container image locally, named after this repository
+(`pnpm image --print` shows the docker command without running it). What goes
+into it beyond the bot — the pinned homebox-mcp — is the `discordllm` block in
+[`package.json`](package.json).
 
 `pnpm chat` runs the same session manager, policy and tools from stdin, with no
 Discord needed. `/attach <path>` posts a local photo with your next message.

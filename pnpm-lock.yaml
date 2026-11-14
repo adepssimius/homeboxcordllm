@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       discordllm:
-        specifier: https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz
-        version: https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz(@anthropic-ai/sdk@0.131.0(zod@4.6.5))(@modelcontextprotocol/sdk@1.31.0(zod@4.6.5))(sharp@0.34.5)
+        specifier: https://github.com/adepssimius/discordLLM/releases/download/v0.2.0/discordllm-0.2.0.tgz
+        version: https://github.com/adepssimius/discordLLM/releases/download/v0.2.0/discordllm-0.2.0.tgz(@anthropic-ai/sdk@0.131.0(zod@4.6.5))(@modelcontextprotocol/sdk@1.31.0(zod@4.6.5))(sharp@0.34.5)
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
@@ -577,9 +577,9 @@ packages:
     resolution: {integrity: sha512-qHbFlFG2N7y3LjPySYsL6A1+BnX6bkTVgo842EX0CqVPk/KTMwZkojPHEXKsQUpWZNyz5BISNHK1cPpQw0+m4A==}
     engines: {node: '>=18'}
 
-  discordllm@https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz:
-    resolution: {integrity: sha512-bZmgLgWw5jkBRU9NQn6JQqAxLVEVy33bYOA8p2SQulp1A9FL5h/VAgAmIJww4zuQFHNsdhoBwoLUqw1cWp1luA==, tarball: https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz}
-    version: 0.1.0
+  discordllm@https://github.com/adepssimius/discordLLM/releases/download/v0.2.0/discordllm-0.2.0.tgz:
+    resolution: {integrity: sha512-qVZ/HR+BxmbTUhhmmAcCe7y9rXJs9MHVnsNRt+Nx+ri9B5GuIlYGGLcw9ZJHujIkewA8vJdgmPMLgqgm3fT03A==, tarball: https://github.com/adepssimius/discordLLM/releases/download/v0.2.0/discordllm-0.2.0.tgz}
+    version: 0.2.0
     engines: {node: '>=24'}
     hasBin: true
     peerDependencies:
@@ -1712,7 +1712,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  discordllm@https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz(@anthropic-ai/sdk@0.131.0(zod@4.6.5))(@modelcontextprotocol/sdk@1.31.0(zod@4.6.5))(sharp@0.34.5):
+  discordllm@https://github.com/adepssimius/discordLLM/releases/download/v0.2.0/discordllm-0.2.0.tgz(@anthropic-ai/sdk@0.131.0(zod@4.6.5))(@modelcontextprotocol/sdk@1.31.0(zod@4.6.5))(sharp@0.34.5):
     dependencies:
       '@anthropic-ai/claude-agent-sdk': 0.3.226(@anthropic-ai/sdk@0.131.0(zod@4.6.5))(@modelcontextprotocol/sdk@1.31.0(zod@4.6.5))(zod@4.6.5)
       croner: 9.1.0

@@ -18,7 +18,7 @@
     "image": "discordllm-build"
   },
   "dependencies": {
-    "discordllm": "https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz",
+    "discordllm": "https://github.com/adepssimius/discordLLM/releases/download/v0.2.0/discordllm-0.2.0.tgz",
     "sharp": "^0.34.5"
   },
   "devDependencies": {

@@ -8,24 +8,12 @@ importers:
 
   .:
     dependencies:
-      '@anthropic-ai/claude-agent-sdk':
-        specifier: 0.3.226
-        version: 0.3.226(@anthropic-ai/sdk@0.131.0(zod@4.6.5))(@modelcontextprotocol/sdk@1.31.0(zod@4.6.5))(zod@4.6.5)
-      croner:
-        specifier: ^9.1.0
-        version: 9.1.0
-      discord.js:
-        specifier: ^14.16.3
-        version: 14.27.0
-      pino:
-        specifier: ^9.5.0
-        version: 9.14.0
+      discordllm:
+        specifier: https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz
+        version: https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz(@anthropic-ai/sdk@0.131.0(zod@4.6.5))(@modelcontextprotocol/sdk@1.31.0(zod@4.6.5))(sharp@0.34.5)
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
-      zod:
-        specifier: ^4.3.6
-        version: 4.6.5
     devDependencies:
       '@types/node':
         specifier: ^24.13.3
@@ -588,6 +576,20 @@ packages:
   discord.js@14.27.0:
     resolution: {integrity: sha512-qHbFlFG2N7y3LjPySYsL6A1+BnX6bkTVgo842EX0CqVPk/KTMwZkojPHEXKsQUpWZNyz5BISNHK1cPpQw0+m4A==}
     engines: {node: '>=18'}
+
+  discordllm@https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz:
+    resolution: {integrity: sha512-bZmgLgWw5jkBRU9NQn6JQqAxLVEVy33bYOA8p2SQulp1A9FL5h/VAgAmIJww4zuQFHNsdhoBwoLUqw1cWp1luA==, tarball: https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz}
+    version: 0.1.0
+    engines: {node: '>=24'}
+    hasBin: true
+    peerDependencies:
+      pg: ^8.13.0
+      sharp: ^0.34.5
+    peerDependenciesMeta:
+      pg:
+        optional: true
+      sharp:
+        optional: true
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -1707,6 +1709,21 @@ snapshots:
       tslib: 2.8.1
       undici: 6.29.0
     transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  discordllm@https://github.com/adepssimius/discordLLM/releases/download/v0.1.0/discordllm-0.1.0.tgz(@anthropic-ai/sdk@0.131.0(zod@4.6.5))(@modelcontextprotocol/sdk@1.31.0(zod@4.6.5))(sharp@0.34.5):
+    dependencies:
+      '@anthropic-ai/claude-agent-sdk': 0.3.226(@anthropic-ai/sdk@0.131.0(zod@4.6.5))(@modelcontextprotocol/sdk@1.31.0(zod@4.6.5))(zod@4.6.5)
+      croner: 9.1.0
+      discord.js: 14.27.0
+      pino: 9.14.0
+      zod: 4.6.5
+    optionalDependencies:
+      sharp: 0.34.5
+    transitivePeerDependencies:
+      - '@anthropic-ai/sdk'
+      - '@modelcontextprotocol/sdk'
       - bufferutil
       - utf-8-validate
 

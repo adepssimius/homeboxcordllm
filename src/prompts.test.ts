@@ -42,6 +42,29 @@ describe("systemAppend", () => {
     expect(sys()).toMatch(/Never write a token, password or other secret/);
   });
 
+  it("carries the cataloguing rules for every household", () => {
+    const s = sys();
+    expect(s).toMatch(/never for the owner's current setup/);
+    expect(s).toMatch(/Don't guess the manufacturer or the quantity/);
+    expect(s).toMatch(/what you read separate from what you inferred/);
+    expect(s).toMatch(/One entry per distinguishing variant, not one per package/);
+    expect(s).toMatch(/ask what the item is used for/);
+  });
+
+  it("explains general and specific tags with the pen example", () => {
+    const s = sys();
+    expect(s).toMatch(/general and specific/);
+    for (const tag of ["pen", "office supply", "writing instrument", "retractable pen"]) expect(s).toContain(`\`${tag}\``);
+  });
+
+  it("warns that create_item drops tags that do not exist yet", () => {
+    expect(sys()).toMatch(/silently drops a\s+tag that does not exist yet/);
+  });
+
+  it("keeps the cataloguing rules even without Homebox connected", () => {
+    expect(sys({ hasHomebox: false })).toMatch(/## Cataloguing items/);
+  });
+
   it("names the bot's own tools by the names the library gives them", () => {
     const named = [...sys().matchAll(/`mcp__bot__(\w+)`/g)].map((m) => m[1]);
     expect(new Set(named)).toEqual(new Set(["schedule_set", "schedule_list", "schedule_delete", "schedule_run_now", "poll"]));
